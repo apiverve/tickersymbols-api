@@ -1,0 +1,122 @@
+openapi: 3.0.4
+info:
+  title: Ticker Symbols
+  description: >-
+    Ticker Symbols identifies what a ticker symbol is and where it trades. Look
+    up a symbol to get every listing that carries it across the US and 18
+    international stock markets, cryptocurrencies, futures and currency pairs,
+    or find a stock symbol by company name. Every result carries its name,
+    market, exchange, security type and asset class; paid plans add FIGI
+    identifiers, SEC CIK numbers and fuller search results.
+  termsOfService: https://apiverve.com/terms/
+  contact:
+    name: APIVerve Support
+    email: hello@apiverve.com
+    url: https://apiverve.com/contact
+  version: 1.0.0
+externalDocs:
+  description: Learn more about APIVerve
+  url: https://docs.apiverve.com?utm_source=openapi
+servers:
+  - url: https://api.apiverve.com/
+paths:
+  /v1/tickersymbols:
+    get:
+      summary: Ticker Symbols
+      description: >-
+        Get every listing that carries a ticker symbol, across stock markets,
+        crypto and futures.
+      operationId: tickersymbols
+      parameters:
+        - name: symbol
+          in: query
+          schema:
+            type: string
+          required: true
+          description: >-
+            The ticker symbol to look up, for example AAPL, BRK.B, SHEL or 7203.
+            Returns every listing with that symbol. A suffix such as BP.L, a
+            coin pair such as BTC-USD or a contract such as CL=F narrows it to
+            that market.
+          example: SHEL
+        - name: market
+          in: query
+          schema:
+            type: string
+          required: false
+          description: >-
+            Keep only listings on this market: a two-letter market code, CRYPTO,
+            FUTURES or FX for currency pairs.
+          example: GB
+        - name: assetClass
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Keep only listings of this asset class.
+          example: equity
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: status
+                  error:
+                    type: string
+                    description: error
+                  data:
+                    type: object
+                    description: data
+              example:
+                status: ok
+                error: null
+                data:
+                  symbol: SHEL
+                  search: null
+                  count: 2
+                  results:
+                    - symbol: SHEL
+                      name: >-
+                        Shell PLC American Depositary Shares (each representing
+                        two (2) Ordinary Shares)
+                      market: US
+                      country: US
+                      exchange: XNYS
+                      exchangeName: New York Stock Exchange
+                      type: Depositary Receipt
+                      assetClass: equity
+                      figi: BBG0147BN6G2
+                      compositeFigi: BBG0147BN6G2
+                      shareClassFigi: BBG0147BN6H1
+                      cik: '0001306965'
+                    - symbol: SHEL
+                      name: Shell Plc
+                      market: GB
+                      country: GB
+                      exchange: XLON
+                      exchangeName: London Stock Exchange
+                      type: Common Stock
+                      assetClass: equity
+                      figi: BBG0149N4YC8
+                      compositeFigi: BBG0149N4YB9
+                      shareClassFigi: BBG0149N4YG4
+                      cik: null
+        '401':
+          description: Your request was not authorized, or your API Key was invalid
+        '404':
+          description: Requested resource was not found
+        '500':
+          description: A server error has occurred, try again later
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: x-api-key
+      in: header
+security:
+  - api_key: []
